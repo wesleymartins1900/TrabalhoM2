@@ -165,7 +165,7 @@ int main()
 
     hidecursor();
 
-    Imprime(m);
+    //Imprime(m);
 
 	//// ToDo
 	// Motor do Jogo
