@@ -5,6 +5,15 @@
 #define L 16
 #define C 34
 
+#pragma region Posições do Cenário
+#define CAMINHO_LIVRE 0
+#define CAMINHO_PAREDE 1
+#define FORMIGA_SEM_ALIMENTO 8
+#define FORMIGA_COM_ALIMENTO 9
+#define ARMAZEM_LIVRE 4
+#define ARMAZEM_COMPROMETIDO 5
+#pragma endregion
+
 using namespace std;
 
 // Ocultar o cursor do mouse
@@ -38,37 +47,33 @@ void Imprime(int m[L][C])
 	{
         for (int j = 0; j < C; j++) 
 		{
-			if (m[i][j] == 0)
+			if (m[i][j] == CAMINHO_LIVRE)
 			{
-				// Caminho Livre
 				cout << " ";
 			}
-            else if (m[i][j] == 1)
+            else if (m[i][j] == CAMINHO_PAREDE)
 			{
-				// (char)178 Monta uma "parede" utilizando caractere ASCII
                 cout << (char)178;
             }
-			else if (m[i][j] == 8)
+			else if (m[i][j] == FORMIGA_SEM_ALIMENTO)
 			{
-				// Formiga sem carregar alimento
 				cout << "f";
 			} 
-			else if (m[i][j] == 9)
+			else if (m[i][j] == FORMIGA_COM_ALIMENTO)
 			{
-				// Formiga carregando alimento
 				cout << "F";
 			}
-			else if (m[i][j] == 5)
+			else if (m[i][j] == ARMAZEM_LIVRE)
 			{
-				// Armazém disponível
 				cout << "A";
 			}
-			else if (m[i][j] == 6)
+			else if (m[i][j] == ARMAZEM_COMPROMETIDO)
 			{
-				// Armazém comprometido
 				cout << "C";
 			}
 		}
+
+		// Próxima linha da exibição
 		cout << "\n";
     }
 }
@@ -84,41 +89,68 @@ void move_formiga(int m[L][C])
 		// Captura a última tecla pressionada sem necessidade de pressionar Enter
 		p = getche();
 
-        m[x][y] = 0;
+        int _valorXAnterior = x;
+		int _valorYAnterior = y;
 
 		// Além de identificar se tecla pressionada, é validado se caminho está livre
-		// ou seja, posição igual 0
-        switch(p)
+        // Levamos em consideração que as bordas do mapa (linhas e colunas dos cantos) são paredes
+		switch(p)
         {
             case 'w':
 			case 'W':
-				if (x > 0 && m[x--][y] != 0)
-					return;
-				x--;
+				if (x > 1 && m[x--][y] == CAMINHO_LIVRE) x--;
 				break;      
             case 's':
 			case 'S':
-				if (x <= L && m[x++][y] != 0)
-					return;
-				x++;
+				if (x < L - 1 && m[x++][y] == CAMINHO_LIVRE) x++;
 				break;     
             case 'a':
 			case 'A':
-				if (y > 0 && m[x][y--] != 0)
-					return;
-				y--; 
+				if (y > 1 && m[x][y--] == CAMINHO_LIVRE) y--; 
 				break;
             case 'd':
 			case 'D':
-				if (y <= C && m[x][y++] != 0)
-					return;
-				y++;
+				if (y < C - 1 && m[x][y++] == CAMINHO_LIVRE) y++;
 				break;
 			default: 
 				return;
         }
 
-        m[x][y] = 9;
+		// Valida posição com Armazém
+		if (m[x][y] == ARMAZEM_COMPROMETIDO)
+		{
+			// Pega um alimento
+			x = _valorXAnterior;
+			y = _valorYAnterior;
+
+			m[x][y] = FORMIGA_COM_ALIMENTO;
+		}
+		else if (m[x][y] == ARMAZEM_LIVRE)
+		{
+			// Caso a formiga chegue a um Armazém Livre carregando algum alimento
+			// retorna para posição anterior sem o alimento
+			if (m[_valorXAnterior][_valorYAnterior] == FORMIGA_COM_ALIMENTO)
+			{
+				// ToDo
+				// Contar pontuação
+			}
+
+			x = _valorXAnterior;
+			y = _valorYAnterior;
+
+			m[x][y] = FORMIGA_SEM_ALIMENTO;
+		}
+		// Valida posição sem Armazém
+		else if (m[_valorXAnterior][_valorYAnterior] == FORMIGA_COM_ALIMENTO)
+		{
+			m[x][y] = FORMIGA_COM_ALIMENTO;
+			m[_valorXAnterior][_valorYAnterior] = CAMINHO_LIVRE;
+		}
+		else if(m[_valorXAnterior][_valorYAnterior] == FORMIGA_SEM_ALIMENTO)
+		{
+			m[x][y] = FORMIGA_SEM_ALIMENTO;
+			m[_valorXAnterior][_valorYAnterior] = CAMINHO_LIVRE;
+		}
 
         Sleep(100);
         mgotoxy(0, 0);
