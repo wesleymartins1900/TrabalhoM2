@@ -1,102 +1,174 @@
 #include <iostream>
-#include <fstream> //Para leitura e escrita em arquivo
 #include <windows.h>
-#include <conio.h>
+#include <conio.h> // Para utilizar mgotoxy()
 
 #define L 16
 #define C 34
 
+#pragma region Posições do Cenário
+#define CAMINHO_LIVRE 0
+#define CAMINHO_PAREDE 1
+#define FORMIGA_SEM_ALIMENTO 8
+#define FORMIGA_COM_ALIMENTO 9
+#define ARMAZEM_LIVRE 4
+#define ARMAZEM_COMPROMETIDO 5
+#pragma endregion
+
 using namespace std;
 
+// Ocultar o cursor do mouse
 void hidecursor()
 {
-   HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-   CONSOLE_CURSOR_INFO info;
-   info.dwSize = 100;
-   info.bVisible = FALSE;
-   SetConsoleCursorInfo(consoleHandle, &info);
+	// Armazena o estado atual do console
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	
+	// Contém informações sobre o cursor do console
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+
+	//Define o tamanho e a visibilidade do cursor para o buffer de tela do console especificado.
+	SetConsoleCursorInfo(consoleHandle, &info);
 }
 
-void mgotoxy(int x,int y)
+void mgotoxy(int x, int y)
 {
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD{x,y});
+	// Move o cursor para determinada posição
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD{ x, y });
 }
 
 //Nessa função a matriz é percorrida e os números são substituidos
-void imprime(int m[L][C]){
-    for (int i=0;i<L;i++) {
-        for (int j=0;j<C;j++) {
-            if(m[i][j]==1){
-                cout<<(char)178;
-            }
-            else if(m[i][j]==0){
-                cout<<" ";
-            }
-            else if (m[i][j]==9){
-                cout<<"f";
-            } else {
-                cout<<"A";
-            }
+void Imprime(int m[L][C])
+{
+	// A partir dos dados preenchidos na matriz
+	// é criado e exibido o mapa
 
-        }
-        cout<<"\n";
+    for (int i = 0; i < L; i++) 
+	{
+        for (int j = 0; j < C; j++) 
+		{
+			if (m[i][j] == CAMINHO_LIVRE)
+			{
+				cout << " ";
+			}
+            else if (m[i][j] == CAMINHO_PAREDE)
+			{
+                cout << (char)178;
+            }
+			else if (m[i][j] == FORMIGA_SEM_ALIMENTO)
+			{
+				cout << "f";
+			} 
+			else if (m[i][j] == FORMIGA_COM_ALIMENTO)
+			{
+				cout << "F";
+			}
+			else if (m[i][j] == ARMAZEM_LIVRE)
+			{
+				cout << "A";
+			}
+			else if (m[i][j] == ARMAZEM_COMPROMETIDO)
+			{
+				cout << "C";
+			}
+		}
+
+		// Próxima linha da exibição
+		cout << "\n";
     }
 }
 
-
-
-
-void move_formiga(int m[L][C]){
-    static int x=1,y=1;
+void move_formiga(int m[L][C])
+{
+    static int x = 1, y = 1;
     char p;
 
-     if ( _kbhit() ){
-        p = getch();
+	// Aguarda uma tecla ser pressionada
+     if (_kbhit())
+	 {
+		// Captura a última tecla pressionada sem necessidade de pressionar Enter
+		p = getche();
 
-        m[x][y]=0;
+        int _valorXAnterior = x;
+		int _valorYAnterior = y;
 
-        switch(p)
+		// Além de identificar se tecla pressionada, é validado se caminho está livre
+        // Levamos em consideração que as bordas do mapa (linhas e colunas dos cantos) são paredes
+		switch(p)
         {
-            case 'w': x--; break;      //cima
-            case 's': x++; break;     //baixo
-            case 'a': y--; break;  //esquerda
-            case 'd': y++; break;   //direita
+            case 'w':
+			case 'W':
+				if (x > 1 && m[x--][y] == CAMINHO_LIVRE) x--;
+				break;      
+            case 's':
+			case 'S':
+				if (x < L - 1 && m[x++][y] == CAMINHO_LIVRE) x++;
+				break;     
+            case 'a':
+			case 'A':
+				if (y > 1 && m[x][y--] == CAMINHO_LIVRE) y--; 
+				break;
+            case 'd':
+			case 'D':
+				if (y < C - 1 && m[x][y++] == CAMINHO_LIVRE) y++;
+				break;
+			default: 
+				return;
         }
-        m[x][y]=9;
-        //Sleep(100);
-        mgotoxy(0,0);
-        imprime(m);
+
+		// Valida posição com Armazém
+		if (m[x][y] == ARMAZEM_COMPROMETIDO)
+		{
+			// Pega um alimento
+			x = _valorXAnterior;
+			y = _valorYAnterior;
+
+			m[x][y] = FORMIGA_COM_ALIMENTO;
+		}
+		else if (m[x][y] == ARMAZEM_LIVRE)
+		{
+			// Caso a formiga chegue a um Armazém Livre carregando algum alimento
+			// retorna para posição anterior sem o alimento
+			if (m[_valorXAnterior][_valorYAnterior] == FORMIGA_COM_ALIMENTO)
+			{
+				// ToDo
+				// Contar pontuação
+			}
+
+			x = _valorXAnterior;
+			y = _valorYAnterior;
+
+			m[x][y] = FORMIGA_SEM_ALIMENTO;
+		}
+		// Valida posição sem Armazém
+		else if (m[_valorXAnterior][_valorYAnterior] == FORMIGA_COM_ALIMENTO)
+		{
+			m[x][y] = FORMIGA_COM_ALIMENTO;
+			m[_valorXAnterior][_valorYAnterior] = CAMINHO_LIVRE;
+		}
+		else if(m[_valorXAnterior][_valorYAnterior] == FORMIGA_SEM_ALIMENTO)
+		{
+			m[x][y] = FORMIGA_SEM_ALIMENTO;
+			m[_valorXAnterior][_valorYAnterior] = CAMINHO_LIVRE;
+		}
+
+        Sleep(100);
+        mgotoxy(0, 0);
+        Imprime(m);
      }
-
-
 }
 
 int main()
 {
-    int m[L][C]={
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-        {1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
-        {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1},
-        {1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,1,1,1,1,1,0,1,0,1,1},
-        {1,0,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1},
-        {1,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1},
-        {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1},
-        {1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,0,1},
-        {1,0,1,0,1,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,0,0,0,0,1,0,1},
-        {1,0,1,0,1,0,0,0,0,0,0,1,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,0,1,0,1},
-        {1,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0,1,1,1,1,0,0,0,1,0,1,1,1,1,0,1,0,1},
-        {1,0,1,0,1,1,1,1,1,1,1,0,0,1,0,1,0,0,1,1,1,0,1,0,1,0,1,0,0,0,0,1,0,1},
-        {1,0,1,0,0,0,0,0,0,0,0,0,1,1,0,1,1,0,1,0,0,0,1,0,0,0,1,0,1,1,1,1,0,1},
-        {1,0,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1},
-        {1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
-        {1,1,1,1,1,1,1,1,1,1,1,3,1,0,1,1,1,1,1,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1},
-    };
+	//// ToDo
+    // m[L][C] = Cenário
+
     hidecursor();
 
-    imprime(m);
+    //Imprime(m);
 
-    while(true){
-        move_formiga(m);
-    }
-    return 0;
+	//// ToDo
+	// Motor do Jogo
+	
+	return 0;
 }
