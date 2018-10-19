@@ -31,7 +31,7 @@ void hidecursor()
 	SetConsoleCursorInfo(consoleHandle, &info);
 }
 
-void mgotoxy(int x, int y)
+void mgotoxy(short x, short y)
 {
 	// Move o cursor para determinada posição
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD{ x, y });
@@ -87,7 +87,7 @@ void move_formiga(int m[L][C])
      if (_kbhit())
 	 {
 		// Captura a última tecla pressionada sem necessidade de pressionar Enter
-		p = getche();
+		p = _getche();
 
         int _valorXAnterior = x;
 		int _valorYAnterior = y;
@@ -158,17 +158,17 @@ void move_formiga(int m[L][C])
      }
 }
 
-int main()
-{
-	//// ToDo
-    // m[L][C] = Cenário
-
-    hidecursor();
-
-    //Imprime(m);
-
-	//// ToDo
-	// Motor do Jogo
-	
-	return 0;
-}
+//int main()
+//{
+//	//// ToDo
+//    // m[L][C] = Cenário
+//
+//    hidecursor();
+//
+//    //Imprime(m);
+//
+//	//// ToDo
+//	// Motor do Jogo
+//	
+//	return 0;
+//}
