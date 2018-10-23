@@ -47,7 +47,7 @@ void evento(int m[L][C]) {
 	return;
 }
 
-int evento_de_risco(int m[L][C], int n, int col, int lin) {
+int evento_de_risco(int m[L][C], int &n, int col, int lin) {
 	int sorteio = 0;
 	n++;
 	if (n > 3) {
