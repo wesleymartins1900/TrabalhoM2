@@ -2,6 +2,7 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h> // Para utilizar mgotoxy()
+#include "mypart.h"
 
 #pragma region Posições do Cenário
 #define CAMINHO_LIVRE 0
