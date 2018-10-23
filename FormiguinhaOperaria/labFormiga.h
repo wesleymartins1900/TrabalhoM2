@@ -79,6 +79,8 @@ void Imprime(int m[L][C])
 }
 
 bool inserirComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida) {
+	indiceArmazem = indiceArmazem - 4;
+	
 	int indicePosicao = 3;//retonarIndicePosicao(pino, indiceArmazem); // retorna indice do topo.
 	//Verifica se pode ser adicionada a comida no armazém
 	if (verificaTamanhoComida(pino, indiceArmazem, tamanhoComida)) {
@@ -93,6 +95,8 @@ bool inserirComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComi
 //Remove a comida do topo do armazem e retorna seu valor
 int removerComida(vector<vector<int>> &pino, int indiceArmazem)
 {
+	indiceArmazem = indiceArmazem - 4;
+	
 	int indicePosicao = retonarIndicePosicao(pino, indiceArmazem); // retorna indice do topo
 	int tamanhoComida = pino[indiceArmazem][indicePosicao]; //salva comida
 	pino[indiceArmazem][indicePosicao] = 0; //zera comida
