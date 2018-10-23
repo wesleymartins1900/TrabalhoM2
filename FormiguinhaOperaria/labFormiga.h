@@ -14,6 +14,12 @@
 #define ARMAZEM_COMPROMETIDO 6
 #pragma endregion
 
+#pragma region Armazem
+#define QUANTIDADE_ARMAZEM 3 //Quantidade de armazéns PINO A, B, C
+#define QUANTIDADE_POSICAO 4 //Quantidade de espaço disponível em cada armazém
+#define POSICAO_INICIAL 0  // Pino no qual inicia as comidas 
+#pragma endregion
+
 using namespace std;
 
 // Ocultar o cursor do mouse
@@ -38,14 +44,14 @@ void mgotoxy(short x, short y)
 }
 
 //Nessa função a matriz é percorrida e os números são substituidos
-void Imprime(int m[L][C])
+void Imprime(int m[LI][CO])
 {
 	// A partir dos dados preenchidos na matriz
 	// é criado e exibido o mapa
 
-	for (int i = 0; i < L; i++)
+	for (int i = 0; i < LI; i++)
 	{
-		for (int j = 0; j < C; j++)
+		for (int j = 0; j < CO; j++)
 		{
 			if (m[i][j] == CAMINHO_LIVRE)
 			{
@@ -78,6 +84,34 @@ void Imprime(int m[L][C])
 	}
 }
 
+bool verificaTamanhoComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida)
+{
+	indiceArmazem = indiceArmazem - 4;
+
+	for (int i = 0; i < QUANTIDADE_POSICAO; i++) {
+		if (pino[indiceArmazem][i] != 0) {
+			if (pino[indiceArmazem][i] > tamanhoComida) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+int retonarIndicePosicao(vector<vector<int>> &pino, int indiceArmazem) {
+	indiceArmazem = indiceArmazem - 4;
+
+	for (int i = 0; i < QUANTIDADE_POSICAO; i++) {
+		if (pino[indiceArmazem][i] != 0) {
+			return i;
+		}
+	}
+	return int(QUANTIDADE_POSICAO);
+}
+
 bool inserirComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida) {
 	indiceArmazem = indiceArmazem - 4;
 	
@@ -103,7 +137,7 @@ int removerComida(vector<vector<int>> &pino, int indiceArmazem)
 	return tamanhoComida;
 }
 
-void move_formiga(int m[L][C], vector<vector<int>> &pino)
+void move_formiga(int m[LI][CO], vector<vector<int>> &pino)
 {
 	static int x = 1, y = 1;
 	static int tamanho_comida =	1;
@@ -125,7 +159,7 @@ void move_formiga(int m[L][C], vector<vector<int>> &pino)
 			break;
 		case 's':
 		case 'S':
-			if (x < L - 1 && m[x++][y] == CAMINHO_LIVRE) x++;
+			if (x < LI - 1 && m[x++][y] == CAMINHO_LIVRE) x++;
 			break;
 		case 'a':
 		case 'A':
@@ -133,7 +167,7 @@ void move_formiga(int m[L][C], vector<vector<int>> &pino)
 			break;
 		case 'd':
 		case 'D':
-			if (y < C - 1 && m[x][y++] == CAMINHO_LIVRE) y++;
+			if (y < CO - 1 && m[x][y++] == CAMINHO_LIVRE) y++;
 			break;
 		default:
 			return;
