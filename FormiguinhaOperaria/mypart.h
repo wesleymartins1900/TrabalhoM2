@@ -1,17 +1,12 @@
 #pragma once
-#include "string"
-#include <iostream>
-#include "mypart.h"
-#include <iomanip>
 #include <fstream>
-#include <stdlib.h> 
-#include <time.h> 
-#define L 16
-#define C 34
+
+#define LI 16
+#define CO 34
 
 using namespace std;
 
-void leitura_txt(int m[L][C]) {
+void leitura_txt(int m[LI][CO]) {
 	ifstream txtFile;
 	int l, c;
 
@@ -25,15 +20,15 @@ void leitura_txt(int m[L][C]) {
 	return;
 }
 
-void evento(int m[L][C]) {
+void evento(int m[LI][CO]) {
 	srand(time(NULL));
 	int s[2], cont = 0, contador_evento = 0;
 	bool ver = false;
 
 	do { //Contador de paredes quebradas (vai até 3).
 		do { //Verificador se a posição sorteada esta livre para ser quebrada.
-			s[0] = rand() % L + 1;
-			s[1] = rand() % C + 1;
+			s[0] = rand() % LI + 1;
+			s[1] = rand() % CO + 1;
 			if (m[s[0]][s[1]] == 0) {
 				m[s[0]][s[1]] = 1;
 				ver = true;
@@ -47,23 +42,23 @@ void evento(int m[L][C]) {
 	return;
 }
 
-int evento_de_risco(int m[L][C], int &n) {
+int evento_de_risco(int m[LI][CO], int n) {
 	int sorteio = 0;
 	n++;
 	if (n > 3) {
 		sorteio = rand() % 101;
 		if (n == 8) {
 			if (sorteio <= 75) {
-				for (int i = 0; i < L; i++) {
-					for (int j = 0; j < C; j++) {
+				for (int i = 0; i < LI; i++) {
+					for (int j = 0; j < CO; j++) {
 						m[i][j] = 1;
 					}
 				}				
 			}
 		}
 		else if ((n - 3) * 15 >= sorteio) {
-			for (int i = 0; i < L; i++) {
-				for (int j = 0; j < C; j++) {
+			for (int i = 0; i < LI; i++) {
+				for (int j = 0; j < CO; j++) {
 					m[i][j] = 1;
 				}
 			}
