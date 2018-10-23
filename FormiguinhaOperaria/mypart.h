@@ -47,18 +47,26 @@ void evento(int m[L][C]) {
 	return;
 }
 
-int evento_de_risco(int m[L][C], int &n, int col, int lin) {
+int evento_de_risco(int m[L][C], int &n) {
 	int sorteio = 0;
 	n++;
 	if (n > 3) {
 		sorteio = rand() % 101;
 		if (n == 8) {
 			if (sorteio <= 75) {
-				m[col][lin] = 1;
+				for (int i = 0; i < L; i++) {
+					for (int j = 0; j < C; j++) {
+						m[i][j] = 1;
+					}
+				}				
 			}
 		}
 		else if ((n - 3) * 15 >= sorteio) {
-			m[col][lin] = 1;
+			for (int i = 0; i < L; i++) {
+				for (int j = 0; j < C; j++) {
+					m[i][j] = 1;
+				}
+			}
 		}
 	}
 
