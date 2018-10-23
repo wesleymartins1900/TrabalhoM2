@@ -104,7 +104,7 @@ int removerComida(vector<vector<int>> &pino, int indiceArmazem)
 void move_formiga(int m[L][C], vector<vector<int>> &pino)
 {
 	static int x = 1, y = 1;
-	static int tamanho_comida = 0;
+	static int tamanho_comida =	1;
 	char p;
 
 	// Captura a última tecla pressionada sem necessidade de pressionar Enter
