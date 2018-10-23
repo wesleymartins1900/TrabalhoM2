@@ -1,11 +1,6 @@
 #pragma once
-#include "string"
-#include <iostream>
-#include "mypart.h"
-#include <iomanip>
 #include <fstream>
-#include <stdlib.h> 
-#include <time.h> 
+
 #define L 16
 #define C 34
 

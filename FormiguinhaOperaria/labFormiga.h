@@ -3,9 +3,6 @@
 #include <windows.h>
 #include <conio.h> // Para utilizar mgotoxy()
 
-#define L 16
-#define C 34
-
 #pragma region Posições do Cenário
 #define CAMINHO_LIVRE 0
 #define CAMINHO_PAREDE 1
