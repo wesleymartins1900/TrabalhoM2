@@ -27,7 +27,4 @@
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\um\winnt.rh" />
-  </ItemGroup>
 </Project>
