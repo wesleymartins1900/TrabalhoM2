@@ -51,7 +51,9 @@ int evento_de_risco(int m[LI][CO], int n) {
 			if (sorteio <= 75) {
 				for (int i = 0; i < LI; i++) {
 					for (int j = 0; j < CO; j++) {
-						m[i][j] = 1;
+						if (m[i][j] == 6) {
+							m[i][j] = 1;
+						}	
 					}
 				}				
 			}
@@ -59,7 +61,9 @@ int evento_de_risco(int m[LI][CO], int n) {
 		else if ((n - 3) * 15 >= sorteio) {
 			for (int i = 0; i < LI; i++) {
 				for (int j = 0; j < CO; j++) {
-					m[i][j] = 1;
+					if (m[i][j] == 6) {
+						m[i][j] = 1;
+					}
 				}
 			}
 		}

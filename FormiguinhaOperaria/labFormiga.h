@@ -47,11 +47,8 @@ void mgotoxy(short x, short y)
 //Nessa função a matriz é percorrida e os números são substituidos
 void Imprime(int m[LI][CO])
 {
-	setlocale(LC_ALL, "portuguese");
-
 	// A partir dos dados preenchidos na matriz
 	// é criado e exibido o mapa
-
 	for (int i = 0; i < LI; i++)
 	{
 		for (int j = 0; j < CO; j++)
@@ -62,8 +59,7 @@ void Imprime(int m[LI][CO])
 			}
 			else if (m[i][j] == CAMINHO_PAREDE)
 			{
-				cout << '#';
-				//(char)164
+				cout << (char)178;
 			}
 			else if (m[i][j] == FORMIGA_SEM_ALIMENTO)
 			{
@@ -90,8 +86,6 @@ void Imprime(int m[LI][CO])
 
 bool verificaTamanhoComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida)
 {
-	indiceArmazem = indiceArmazem - 4;
-
 	for (int i = 0; i < QUANTIDADE_POSICAO; i++) {
 		if (pino[indiceArmazem][i] != 0) {
 			if (pino[indiceArmazem][i] > tamanhoComida) {
@@ -115,7 +109,7 @@ int retonarIndicePosicao(vector<vector<int>> &pino, int indiceArmazem) {
 }
 
 bool inserirComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida) {
-	int indicePosicao = 3;//retonarIndicePosicao(pino, indiceArmazem); // retorna indice do topo.
+	int indicePosicao = retonarIndicePosicao(pino, indiceArmazem); // retorna indice do topo.
 	//Verifica se pode ser adicionada a comida no armazém
 	if (verificaTamanhoComida(pino, indiceArmazem, tamanhoComida)) {
 		if ((indicePosicao - 1) >= 0) {
@@ -156,13 +150,11 @@ void AlteraPosicao(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida
 			// retorna para posição anterior sem o alimento
 			if (m[xAnterior][yAnterior] == FORMIGA_COM_ALIMENTO)
 			{
-				inserirComida(pino, m[xAtual][yAtual] - 3, tamanho_comida);
+				m[xAnterior][yAnterior] = inserirComida(pino, m[xAtual][yAtual] - 3, tamanho_comida) ? FORMIGA_SEM_ALIMENTO : FORMIGA_COM_ALIMENTO;
 			}
 
 			xAtual = xAnterior;
 			yAtual = yAnterior;
-
-			m[xAtual][yAtual] = FORMIGA_SEM_ALIMENTO;
 			break;
 		case CAMINHO_PAREDE:
 			xAtual = xAnterior;
@@ -182,7 +174,7 @@ void AlteraPosicao(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida
 
 void move_formiga(int m[LI][CO], vector<vector<int>> &pino)
 {
-	static int x = 1, y = 1;
+	static int x = 1, y = 2;
 	static int tamanho_comida =	0;
 	char p = 0;
 
@@ -193,7 +185,7 @@ void move_formiga(int m[LI][CO], vector<vector<int>> &pino)
 
 		int _valorXAnterior = x;
 		int _valorYAnterior = y;
-
+		
 		// É validado se caminho está livre
 		// Levamos em consideração que as bordas do mapa (linhas e colunas dos cantos) são paredes
 		switch (p)
