@@ -59,23 +59,23 @@ void Imprime(int m[LI][CO])
 			}
 			else if (m[i][j] == CAMINHO_PAREDE)
 			{
-				cout << (char)178;
+				cout << char(178);
 			}
 			else if (m[i][j] == FORMIGA_SEM_ALIMENTO)
 			{
-				cout << (char)176;
+				cout << char(167);
 			}
 			else if (m[i][j] == FORMIGA_COM_ALIMENTO)
 			{
-				cout << char(149);
+				cout << char(233);
 			}
 			else if (m[i][j] == ARMAZEM_LIVRE_1 || m[i][j] == ARMAZEM_LIVRE_2)
 			{
-				cout << char(228);
+				cout << "A";
 			}
 			else if (m[i][j] == ARMAZEM_COMPROMETIDO)
 			{
-				cout << char(162);
+				cout << char(232);
 			}
 		}
 
