@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿//BIBLIOTECA SECUNDARIA ESCRITA EM CONJUNTO ENTRE ALECSANDRA E WESLEY.
+#pragma once
 #include <iostream>
 #include <windows.h>
 #include <conio.h> // Para utilizar mgotoxy()
@@ -23,6 +24,7 @@
 
 using namespace std;
 
+//PARTE DO CÓDIGO ESCRITA POR WESLEY.
 // Ocultar o cursor do mouse
 void hidecursor()
 {
@@ -83,7 +85,10 @@ void Imprime(int m[LI][CO])
 		cout << "\n";
 	}
 }
+//FIM DA PARTE DO CÓDIGO ESCRITA POR WESLEY.
 
+//PARTE DO CÓDIGO ESCRITA POR ALECSANDRA.
+//Função que irá validar se a comida é maior ou menor do que a já colocada, evitando fraude no jogo.
 bool verificaTamanhoComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida)
 {
 	for (int i = 0; i < QUANTIDADE_POSICAO; i++) {
@@ -99,6 +104,7 @@ bool verificaTamanhoComida(vector<vector<int>> &pino, int indiceArmazem, int tam
 	return true;
 }
 
+//Retorna indice do armazem para controlar as comidas.
 int retonarIndicePosicao(vector<vector<int>> &pino, int indiceArmazem) {
 	for (int i = 0; i < QUANTIDADE_POSICAO; i++) {
 		if (pino[indiceArmazem][i] != 0) {
@@ -108,6 +114,7 @@ int retonarIndicePosicao(vector<vector<int>> &pino, int indiceArmazem) {
 	return int(QUANTIDADE_POSICAO);
 }
 
+//Inserção da comida no armazem.
 bool inserirComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida) {
 	int indicePosicao = retonarIndicePosicao(pino, indiceArmazem); // retorna indice do topo.
 	//Verifica se pode ser adicionada a comida no armazém
@@ -133,49 +140,59 @@ void AlteraPosicao(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida
 {
 	switch (m[xAtual][yAtual])
 	{
-		case ARMAZEM_COMPROMETIDO:
-			xAtual = xAnterior;
-			yAtual = yAnterior;
-			
-			if (m[xAtual][yAtual] == FORMIGA_SEM_ALIMENTO)
-			{
-				tamanho_comida = removerComida(pino, 0);
+	case ARMAZEM_COMPROMETIDO:
+		xAtual = xAnterior;
+		yAtual = yAnterior;
 
-				m[xAtual][yAtual] = FORMIGA_COM_ALIMENTO;
-			}
-			break;
-		case ARMAZEM_LIVRE_1:
-		case ARMAZEM_LIVRE_2:
-			// Caso a formiga chegue a um Armazém Livre carregando algum alimento
-			// retorna para posição anterior sem o alimento
-			if (m[xAnterior][yAnterior] == FORMIGA_COM_ALIMENTO)
-			{
-				m[xAnterior][yAnterior] = inserirComida(pino, m[xAtual][yAtual] - 3, tamanho_comida) ? FORMIGA_SEM_ALIMENTO : FORMIGA_COM_ALIMENTO;
-			}
+		if (m[xAtual][yAtual] == FORMIGA_SEM_ALIMENTO)
+		{
+			tamanho_comida = removerComida(pino, 0);
 
-			xAtual = xAnterior;
-			yAtual = yAnterior;
-			break;
-		case CAMINHO_PAREDE:
-			xAtual = xAnterior;
-			yAtual = yAnterior;
-			break;
-		case CAMINHO_LIVRE:
-			m[xAtual][yAtual] = m[xAnterior][yAnterior];
+			m[xAtual][yAtual] = FORMIGA_COM_ALIMENTO;
+		}
+		else if (m[xAtual][yAtual] == FORMIGA_COM_ALIMENTO)
+		{
+			m[xAtual][yAtual] = inserirComida(pino, 0, tamanho_comida) ? FORMIGA_SEM_ALIMENTO : FORMIGA_COM_ALIMENTO;
+		}
+		break;
+	case ARMAZEM_LIVRE_1:
+	case ARMAZEM_LIVRE_2:
+		// Caso a formiga chegue a um Armazém Livre carregando algum alimento
+		// retorna para posição anterior sem o alimento
+		if (m[xAnterior][yAnterior] == FORMIGA_COM_ALIMENTO)
+		{
+			m[xAnterior][yAnterior] = inserirComida(pino, m[xAtual][yAtual] - 3, tamanho_comida) ? FORMIGA_SEM_ALIMENTO : FORMIGA_COM_ALIMENTO;
+		}
+		else if (m[xAnterior][yAnterior] == FORMIGA_SEM_ALIMENTO)
+		{
+			tamanho_comida = removerComida(pino, m[xAtual][yAtual] - 3);
 
-			m[xAnterior][yAnterior] = CAMINHO_LIVRE;
-			break;
-		default:
-			break;
+			m[xAnterior][yAnterior] = FORMIGA_COM_ALIMENTO;
+		}
+
+		xAtual = xAnterior;
+		yAtual = yAnterior;
+		break;
+	case CAMINHO_PAREDE:
+		xAtual = xAnterior;
+		yAtual = yAnterior;
+		break;
+	case CAMINHO_LIVRE:
+		m[xAtual][yAtual] = m[xAnterior][yAnterior];
+
+		m[xAnterior][yAnterior] = CAMINHO_LIVRE;
+		break;
+	default:
+		break;
 	}
-
-
 }
+//FIM DA PARTE DO CÓDIGO ESCRITA POR ALECSANDRA.
 
-void move_formiga(int m[LI][CO], vector<vector<int>> &pino)
+//PARTE DO CÓDIGO ESCRITA POR WESLEY.
+//Função que irá realizar toda movimentação e validação da mesma, sobre a formiga.
+void move_formiga(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida)
 {
 	static int x = 1, y = 2;
-	static int tamanho_comida =	0;
 	char p = 0;
 
 	if (_kbhit()) 
@@ -217,4 +234,5 @@ void move_formiga(int m[LI][CO], vector<vector<int>> &pino)
 		hidecursor();
 		Sleep(100);
 	}
+	//FIM DA PARTE DO CÓDIGO ESCRITA POR WESLEY.
 }
