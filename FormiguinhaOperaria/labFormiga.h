@@ -89,6 +89,23 @@ void Imprime(int m[LI][CO])
 
 //PARTE DO CÓDIGO ESCRITA POR ALECSANDRA.
 //Função que irá validar se a comida é maior ou menor do que a já colocada, evitando fraude no jogo.
+
+bool checkFimGame(vector<vector<int>> &pino, int indiceArmazem) {
+	int verificador = 1;
+	if (indiceArmazem == POSICAO_INICIAL) {
+		return false;
+	}
+	for (int i = 0; i < QUANTIDADE_ARMAZEM; i++) {
+		if (pino[indiceArmazem][i] == verificador) {
+			verificador++;
+		}
+		else {
+			return false;
+		}
+	}
+	return true;
+}
+
 bool verificaTamanhoComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida)
 {
 	for (int i = 0; i < QUANTIDADE_POSICAO; i++) {
