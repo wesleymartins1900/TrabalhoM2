@@ -1,33 +1,6 @@
-//TODA BIBLIOTECA "mypart.h" FOI MANIPULADA E ESCRITA POR HERIKC.
 #pragma once
-#include "string"
-#include <iostream>
-#include "mypart.h"
-#include <iomanip>
-#include <fstream>
-#include <stdlib.h> 
 #include <time.h> 
-
-#define LI 23
-#define CO 30
-
-using namespace std;
-//leitura do arquivo externo, da matriz.
-void leitura_txt(int m[LI][CO]) {
-	ifstream txtFile;
-	int l, c;
-
-	txtFile.open("mapa_principal.txt");
-	txtFile >> l >> c;
-
-	//percorre o arquivo, preenchendo a matriz.
-	for (int i = 0; i < l; i++) {
-		for (int j = 0; j < c; j++) {
-			txtFile >> m[i][j];
-		}
-	}
-	return;
-}
+#include "libMapa.h"
 
 //Evento de deformação do mapa a cada 40 segundos.
 void evento(int m[LI][CO]) {
@@ -81,26 +54,4 @@ int evento_de_risco(int m[LI][CO], int n) {
 	}
 
 	return n;
-}
-
-//Struct usada para exibição de horário
-struct relogio {
-	int minuto;
-	int segundo;
-};
-
-void tempo_real(int tempo_global, relogio &tempo_geral) {
-	int minuto = tempo_global / 60; //Atribuição do valor do minuto;
-	int segundo = tempo_global;
-
-	if (segundo % 60 != 0) { //Verifica se no momento que converter segundo para minuto o resultado é inteiro.
-		segundo -= (minuto * 60);
-	}
-	else {
-		segundo = 0;
-	}
-
-	//Atribui os valores de tempo a struct relogio.
-	tempo_geral.minuto = minuto;
-	tempo_geral.segundo = segundo;
 }
