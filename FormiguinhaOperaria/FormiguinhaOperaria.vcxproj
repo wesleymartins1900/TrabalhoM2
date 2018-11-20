@@ -155,8 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="labFormiga.h" />
-    <ClInclude Include="mypart.h" />
+    <ClInclude Include="libEventosJogo.h" />
+    <ClInclude Include="libFormiga.h" />
+    <ClInclude Include="libArmazem.h" />
+    <ClInclude Include="libMapa.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FormiguinhaOperaria.cpp" />

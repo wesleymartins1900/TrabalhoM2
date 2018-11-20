@@ -1,10 +1,8 @@
-﻿//BIBLIOTECA SECUNDARIA ESCRITA EM CONJUNTO ENTRE ALECSANDRA E WESLEY.
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <windows.h>
 #include <conio.h> // Para utilizar mgotoxy()
-#include "mypart.h"
-#include <stdio.h>
+#include "libArmazem.h"
 
 #pragma region Posições do Cenário
 #define CAMINHO_LIVRE 0
@@ -16,15 +14,8 @@
 #define ARMAZEM_COMPROMETIDO 6
 #pragma endregion
 
-#pragma region Armazem
-#define QUANTIDADE_ARMAZEM 3 //Quantidade de armazéns PINO A, B, C
-#define QUANTIDADE_POSICAO 4 //Quantidade de espaço disponível em cada armazém
-#define POSICAO_INICIAL 0  // Pino no qual inicia as comidas 
-#pragma endregion
-
 using namespace std;
 
-//PARTE DO CÓDIGO ESCRITA POR WESLEY.
 // Ocultar o cursor do mouse
 void hidecursor()
 {
@@ -43,7 +34,7 @@ void hidecursor()
 void mgotoxy(short x, short y)
 {
 	// Move o cursor para determinada posição
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD{ x, y });
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD{x, y});
 }
 
 //Nessa função a matriz é percorrida e os números são substituidos
@@ -84,73 +75,6 @@ void Imprime(int m[LI][CO])
 		// Próxima linha da exibição
 		cout << "\n";
 	}
-}
-//FIM DA PARTE DO CÓDIGO ESCRITA POR WESLEY.
-
-//PARTE DO CÓDIGO ESCRITA POR ALECSANDRA.
-//Função que irá validar se a comida é maior ou menor do que a já colocada, evitando fraude no jogo.
-
-bool checkFimGame(vector<vector<int>> &pino, int indiceArmazem) {
-	int verificador = 1;
-	if (indiceArmazem == POSICAO_INICIAL) {
-		return false;
-	}
-	for (int i = 0; i < QUANTIDADE_ARMAZEM; i++) {
-		if (pino[indiceArmazem][i] == verificador) {
-			verificador++;
-		}
-		else {
-			return false;
-		}
-	}
-	return true;
-}
-
-bool verificaTamanhoComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida)
-{
-	for (int i = 0; i < QUANTIDADE_POSICAO; i++) {
-		if (pino[indiceArmazem][i] != 0) {
-			if (pino[indiceArmazem][i] > tamanhoComida) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-	}
-	return true;
-}
-
-//Retorna indice do armazem para controlar as comidas.
-int retonarIndicePosicao(vector<vector<int>> &pino, int indiceArmazem) {
-	for (int i = 0; i < QUANTIDADE_POSICAO; i++) {
-		if (pino[indiceArmazem][i] != 0) {
-			return i;
-		}
-	}
-	return int(QUANTIDADE_POSICAO);
-}
-
-//Inserção da comida no armazem.
-bool inserirComida(vector<vector<int>> &pino, int indiceArmazem, int tamanhoComida) {
-	int indicePosicao = retonarIndicePosicao(pino, indiceArmazem); // retorna indice do topo.
-	//Verifica se pode ser adicionada a comida no armazém
-	if (verificaTamanhoComida(pino, indiceArmazem, tamanhoComida)) {
-		if ((indicePosicao - 1) >= 0) {
-			pino[indiceArmazem][indicePosicao - 1] = tamanhoComida;
-
-			return true;
-		}
-	}
-	return false;
-}
-//Remove a comida do topo do armazem e retorna seu valor
-int removerComida(vector<vector<int>> &pino, int indiceArmazem)
-{
-	int indicePosicao = retonarIndicePosicao(pino, indiceArmazem); // retorna indice do topo
-	int tamanhoComida = pino[indiceArmazem][indicePosicao]; //salva comida
-	pino[indiceArmazem][indicePosicao] = 0; //zera comida
-	return tamanhoComida;
 }
 
 void AlteraPosicao(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida, int &xAtual, int &yAtual, int xAnterior, int yAnterior)
@@ -203,11 +127,9 @@ void AlteraPosicao(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida
 		break;
 	}
 }
-//FIM DA PARTE DO CÓDIGO ESCRITA POR ALECSANDRA.
 
-//PARTE DO CÓDIGO ESCRITA POR WESLEY.
 //Função que irá realizar toda movimentação e validação da mesma, sobre a formiga.
-void move_formiga(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida)
+void MoveFormiga(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida)
 {
 	static int x = 1, y = 2;
 	char p = 0;
@@ -251,5 +173,4 @@ void move_formiga(int m[LI][CO], vector<vector<int>> &pino, int &tamanho_comida)
 		hidecursor();
 		Sleep(100);
 	}
-	//FIM DA PARTE DO CÓDIGO ESCRITA POR WESLEY.
 }
